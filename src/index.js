@@ -1,36 +1,50 @@
-import AssertionError from 'assertion-error';
+import AssertionError from "assertion-error";
+import { isValidElementType } from "react-is";
 
-const DISPLAY_NAME = 'waitForElement';
+const DISPLAY_NAME = "waitForElement";
 
-export const createWaitForElement = (selector, maxTime = 2000, interval = 10) => rootComponent => {
-
+export const createWaitForElement = (
+  selector,
+  maxTime = 2000,
+  interval = 10
+) => rootComponent => {
   // Check correct usage
   if (!selector) {
-    return Promise.reject(new AssertionError(`No selector specified in ${DISPLAY_NAME}.`));
+    return Promise.reject(
+      new AssertionError(`No selector specified in ${DISPLAY_NAME}.`)
+    );
   }
 
   if (!rootComponent) {
-    return Promise.reject(new AssertionError(`No root component specified in ${DISPLAY_NAME}.`));
+    return Promise.reject(
+      new AssertionError(`No root component specified in ${DISPLAY_NAME}.`)
+    );
   }
 
   if (!rootComponent.length) {
-    return Promise.reject(new AssertionError(`Specified root component in ${DISPLAY_NAME} not found.`));
+    return Promise.reject(
+      new AssertionError(
+        `Specified root component in ${DISPLAY_NAME} not found.`
+      )
+    );
   }
-
 
   // Race component search against maxTime
   return new Promise((resolve, reject) => {
-
     let remainingTime = maxTime;
 
     const intervalId = setInterval(() => {
       if (remainingTime < 0) {
         clearInterval(intervalId);
-        return reject(new AssertionError(`Expected to find ${selector} within ${maxTime}ms, but it was never found.`))
+        return reject(
+          new AssertionError(
+            `Expected to find ${selector} within ${maxTime}ms, but it was never found.`
+          )
+        );
       }
 
       let targetComponent;
-      if (typeof selector === 'function') {
+      if (typeof selector === "function" && !isValidElementType(selector)) {
         targetComponent = rootComponent.update().findWhere(selector);
       } else {
         targetComponent = rootComponent.update().find(selector);
@@ -42,6 +56,6 @@ export const createWaitForElement = (selector, maxTime = 2000, interval = 10) =>
       }
 
       remainingTime = remainingTime - interval;
-    }, interval)
+    }, interval);
   });
 };
