@@ -1,10 +1,10 @@
 import AssertionError from "assertion-error";
-import { isValidElementType } from "react-is";
 
 const DISPLAY_NAME = "waitForElement";
 
 export const createWaitForElement = (
   selector,
+  enzymeFunction = "find",
   maxTime = 2000,
   interval = 10
 ) => rootComponent => {
@@ -43,12 +43,7 @@ export const createWaitForElement = (
         );
       }
 
-      let targetComponent;
-      if (typeof selector === "function" && !isValidElementType(selector)) {
-        targetComponent = rootComponent.update().findWhere(selector);
-      } else {
-        targetComponent = rootComponent.update().find(selector);
-      }
+      const targetComponent = rootComponent.update()[enzymeFunction](selector);
 
       if (targetComponent.length) {
         clearInterval(intervalId);
