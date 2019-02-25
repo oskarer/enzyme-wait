@@ -1,6 +1,6 @@
 {
   "name": "@oskarer/enzyme-wait",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "Wait for an async element to appear when performing integration tests with enzyme.",
   "main": "lib/index.js",
   "scripts": {
